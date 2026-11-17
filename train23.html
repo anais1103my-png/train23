@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101820">
+<title>Le secret du Train 23 — Jeu d'enquête</title>
+<style>
+:root{--bg:#101820;--panel:#1b2833;--gold:#d7b56d;--cream:#f2ead8;--muted:#b8b1a2;--red:#9e4d45}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top,#263744 0,#101820 55%);color:var(--cream);font-family:Georgia,serif;min-height:100vh}
+header{padding:18px 16px;text-align:center;border-bottom:1px solid #67583b;background:#101820cc}
+header .eyebrow{font:12px Arial,sans-serif;letter-spacing:4px;color:var(--gold);text-transform:uppercase}
+h1{font-size:clamp(27px,6vw,44px);margin:8px 0 3px;color:var(--gold);font-weight:normal}
+header p{margin:0;color:var(--muted);font:13px Arial,sans-serif;letter-spacing:1px}
+main{max-width:900px;margin:auto;padding:22px 16px 60px}
+.screen{display:none;animation:appear .35s ease}.screen.active{display:block}
+@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h2{color:var(--gold);font-size:27px;font-weight:normal;margin:5px 0 14px}
+p{line-height:1.6}
+.panel{background:#1b2833eF;border:1px solid #67583b;border-radius:14px;padding:20px;margin:16px 0;box-shadow:0 12px 30px #0005}
+.kicker{color:var(--gold);font:11px Arial,sans-serif;letter-spacing:2px;text-transform:uppercase}
+button{border:1px solid var(--gold);background:var(--gold);color:#17212a;padding:12px 18px;border-radius:8px;font-weight:bold;font-size:15px;cursor:pointer;margin:6px 5px 4px 0}
+button.secondary{background:transparent;color:var(--gold)}
+button:active{transform:scale(.98)}
+.actions{margin-top:20px;display:flex;flex-wrap:wrap;gap:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:13px}
+.flip-card{height:176px;perspective:900px;cursor:pointer;outline:none}
+.flip-inner{height:100%;position:relative;transition:transform .65s;transform-style:preserve-3d}
+.flip-card.flipped .flip-inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border:1px solid var(--gold);border-radius:12px;padding:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(145deg,#293b48,#17232d)}
+.face.back{transform:rotateY(180deg);background:linear-gradient(145deg,#e7dcc3,#c9b98f);color:#1a2228;justify-content:flex-start;overflow:auto}
+.card-num{font:11px Arial,sans-serif;letter-spacing:2px;color:var(--gold)}
+.face.back .card-num{color:#745b2d}
+.card-icon{font-size:31px;margin:12px}
+.face strong{font-size:16px;font-weight:normal}
+.face.back p{font:14px/1.45 Arial,sans-serif;margin:10px 0}
+.small{font:13px Arial,sans-serif;color:var(--muted)}
+.suspects{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.suspect{border:1px solid #786643;border-radius:10px;padding:14px;background:#17232d}
+.suspect h3{color:var(--gold);font-weight:normal;margin:4px 0 8px}
+.suspect p{font:14px/1.45 Arial,sans-serif;margin:5px 0}
+input{background:#0e171e;border:1px solid var(--gold);border-radius:8px;color:var(--cream);font-size:23px;letter-spacing:9px;text-align:center;padding:12px;width:150px}
+.notice{color:#e5c987;font-style:italic}
+#feedback{min-height:25px;color:var(--gold);font:14px Arial,sans-serif;margin-top:10px}
+footer{text-align:center;color:#7f807c;font:11px Arial,sans-serif;padding:20px}
+hr{border:0;border-top:1px solid #67583b;margin:18px 0}
+@media(max-width:480px){main{padding:16px 12px 40px}.panel{padding:16px}.flip-card{height:165px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="eyebrow">Enquête interactive · 1931</div>
+ <h1>Le secret du Train 23</h1>
+ <p>UNE NUIT · QUATRE SUSPECTS · DIX INDICES</p>
+</header>
+<main>
+<section class="screen active" id="s1">
+ <div class="panel">
+  <div class="kicker">Dossier confidentiel — 23 novembre 1931</div>
+  <h2>Le voyageur disparu</h2>
+  <p>Le train de nuit traverse la campagne. À bord, le célèbre collectionneur <strong>Alexander Moreau</strong> vient de disparaître. Son compartiment, le numéro 7, a été retrouvé vide. Le précieux document qu'il transportait n'est plus dans sa mallette.</p>
+  <p>Le train roule depuis deux heures sans arrêt. Quatre personnes pourraient détenir la clé du mystère. À vous d'examiner les indices, de confronter les témoignages et de découvrir où Alexander se trouve.</p>
+  <p class="notice">Aucun danger surnaturel : tout s'explique par l'observation et la logique.</p>
+  <div class="actions"><button onclick="go(2)">Commencer l'enquête →</button></div>
+ </div>
+</section>
+<section class="screen" id="s2">
+ <div class="kicker">Chapitre I</div><h2>Les quatre suspects</h2>
+ <p>Consultez les fiches. Chacun a une raison de s'intéresser au document disparu… mais tous ne disent pas toute la vérité.</p>
+ <div class="suspects">
+  <div class="suspect"><div class="kicker">Suspect 01</div><h3>Clara Beaumont</h3><p>Chanteuse de cabaret. Elle connaissait Alexander depuis plusieurs années. Elle affirme avoir passé la soirée dans la voiture-restaurant.</p></div>
+  <div class="suspect"><div class="kicker">Suspect 02</div><h3>Louis Delacroix</h3><p>Diplomate discret. Il dit avoir discuté avec un télégraphiste pendant une grande partie de la soirée.</p></div>
+  <div class="suspect"><div class="kicker">Suspect 03</div><h3>Madeleine Ross</h3><p>Journaliste. Elle préparait un article sur Alexander et prétend être restée à la voiture-restaurant de 23 h à 23 h 30.</p></div>
+  <div class="suspect"><div class="kicker">Suspect 04</div><h3>Victor Hale</h3><p>Chef de train. Il connaît les accès du convoi et assure avoir passé ce moment près de la locomotive.</p></div>
+ </div>
+ <div class="actions"><button onclick="go(3)">Examiner les lieux →</button><button class="secondary" onclick="go(1)">← Accueil</button></div>
+</section>
+<section class="screen" id="s3">
+ <div class="kicker">Chapitre II</div><h2>Les lieux à inspecter</h2>
+ <div class="grid">
+  <div class="panel"><div class="card-icon">🚪</div><h3>Compartiment 7</h3><p class="small">Le lieu où Alexander a été vu pour la dernière fois.</p></div>
+  <div class="panel"><div class="card-icon">🥂</div><h3>Voiture-restaurant</h3><p class="small">Les voyageurs s'y sont croisés pendant le dîner.</p></div>
+  <div class="panel"><div class="card-icon">🧳</div><h3>Fourgon à bagages</h3><p class="small">Les malles et colis y sont entreposés.</p></div>
+  <div class="panel"><div class="card-icon">🚂</div><h3>Locomotive</h3><p class="small">Victor affirme y avoir été occupé.</p></div>
+ </div>
+ <p>Les dix cartes d'indice sont maintenant accessibles. Touchez chaque carte pour la retourner. Vous pouvez les consulter dans l'ordre de votre choix.</p>
+ <div class="actions"><button onclick="go(4)">Ouvrir les indices →</button><button class="secondary" onclick="go(2)">← Suspects</button></div>
+</section>
+<section class="screen" id="s4">
+ <div class="kicker">Chapitre III · Pièces à conviction</div><h2>Les dix indices</h2>
+ <p class="small">Touchez une carte pour lire son contenu. Touchez-la à nouveau pour la refermer.</p>
+ <div class="grid" id="cards"></div>
+ <div class="actions"><button onclick="go(5)">Lire les témoignages →</button><button class="secondary" onclick="go(3)">← Lieux</button></div>
+</section>
+<section class="screen" id="s5">
+ <div class="kicker">Chapitre IV</div><h2>Les témoignages</h2>
+ <div class="panel"><h3>Clara Beaumont</h3><p>« Le pianiste peut confirmer que je suis restée à table. Je n'ai jamais mis les pieds dans le fourgon. »</p></div>
+ <div class="panel"><h3>Louis Delacroix</h3><p>« Le télégraphiste m'a vu dans le couloir près du bureau. Je n'ai aucun intérêt pour les affaires de monsieur Moreau. »</p></div>
+ <div class="panel"><h3>Madeleine Ross</h3><p>« J'étais à la voiture-restaurant de 23 h à 23 h 30. Je n'ai pas approché les bagages. »</p></div>
+ <div class="panel"><h3>Victor Hale</h3><p>« J'étais avec le mécanicien près de la locomotive. Il pourra confirmer mon emploi du temps. »</p></div>
+ <p class="notice">Un témoignage peut être exact en partie, tout en laissant de côté un détail important.</p>
+ <div class="actions"><button onclick="go(6)">Résoudre le code →</button><button class="secondary" onclick="go(4)">← Indices</button></div>
+</section>
+<section class="screen" id="s6">
+ <div class="kicker">Chapitre V · Le cadenas</div><h2>Le coffre du fourgon</h2>
+ <div class="panel">
+  <p>Une petite boîte métallique est dissimulée dans le fourgon à bagages. Elle possède un cadenas à quatre chiffres.</p>
+  <p>Une note retrouvée près du registre indique l'ordre des chiffres :</p>
+  <ol>
+   <li>Le numéro du compartiment d'Alexander.</li>
+   <li>Le nombre de malles enregistrées sur le reçu.</li>
+   <li>Le chiffre des dizaines des minutes sur la montre arrêtée.</li>
+   <li>Le dernier chiffre du message codé.</li>
+  </ol>
+  <p>Rassemblez les informations des cartes puis saisissez le code.</p>
+  <div style="text-align:center;margin:22px 0"><input id="code" inputmode="numeric" maxlength="4" pattern="[0-9]*" aria-label="Code à quatre chiffres" placeholder="••••"></div>
+  <div style="text-align:center"><button onclick="checkCode()">Déverrouiller</button></div>
+  <div id="feedback" role="status" aria-live="polite"></div>
+ </div>
+ <div class="actions"><button class="secondary" onclick="go(5)">← Témoignages</button></div>
+</section>
+<section class="screen" id="s7">
+ <div class="kicker">Dossier classé</div><h2>Le secret révélé</h2>
+ <div class="panel">
+  <h3 style="color:var(--gold);font-weight:normal">La vérité sur le Train 23</h3>
+  <p><strong>La personne responsable est Madeleine Ross.</strong> Le reçu du fourgon porte ses initiales, et le plan annoté montre qu'elle connaissait le rangement où Alexander a été retrouvé. Son alibi est contredit par les indices : elle n'est pas restée à la voiture-restaurant pendant toute la demi-heure annoncée.</p>
+  <p><strong>Le lieu :</strong> le fourgon à bagages, dans un compartiment de rangement inutilisé. Alexander y est retrouvé sain et sauf.</p>
+  <p><strong>Le mobile :</strong> elle voulait récupérer le document compromettant qu'Alexander transportait, car il révélait qu'elle avait fabriqué une partie de son grand reportage.</p>
+  <p>Clara et Louis ont des alibis confirmés. Victor était auprès du mécanicien. Les indices matériels et les contradictions désignent Madeleine.</p>
+  <hr><p class="notice">Affaire résolue. Le Train 23 peut poursuivre sa route.</p>
+ </div>
+ <div class="actions"><button onclick="restart()">Rejouer l'enquête ↻</button></div>
+</section>
+</main>
+<footer>LE SECRET DU TRAIN 23 · Jeu fictif d'observation et de déduction</footer>
+<script>
+const clues=[
+["01","🎟️","Billet déchiré","Le billet d'Alexander porte clairement le numéro de compartiment 7."],
+["02","⌚","Montre arrêtée","La montre d'Alexander s'est arrêtée à 23 h 15. Le chiffre des dizaines des minutes est donc 1."],
+["03","🥂","Verre à lèvres","Un verre porte une trace de rouge à lèvres. Il vient de la voiture-restaurant : il ne prouve pas qui est allé au fourgon."],
+["04","🗝️","Clé du compartiment","La clé du compartiment 7 a été retrouvée dans le couloir. Elle n'ouvre pas le coffre à bagages."],
+["05","📷","Photographie ancienne","Au dos de la photo, Alexander a écrit : « Madeleine — première enquête, 1929 ». Ils se connaissaient déjà."],
+["06","🗺️","Plan annoté","Un plan du train porte une annotation au crayon : « rangement B — fourgon ». Les lettres M.R. sont inscrites dans la marge."],
+["07","🗣️","Témoignage","Le serveur se souvient avoir vu Madeleine à 23 h 05, puis plus tard seulement après 23 h 30. Il ne peut confirmer sa présence continue."],
+["08","🧾","Reçu de bagages","Le registre indique trois malles enregistrées pour le rangement B. Le reçu est signé « M. Ross »."],
+["09","✉️","Message codé","Le message déchiffré se termine par le chiffre 4 : « Le document est dans le rangement B. La dernière marque est 4. »"],
+["10","📖","Page du registre","Une page arrachée du registre porte la mention : « Accès autorisé à M. Ross pour photographier les bagages ». Elle avait donc une raison officielle d'entrer dans le fourgon."]
+];
+const cards=document.getElementById('cards');
+clues.forEach(c=>{
+ const el=document.createElement('div');el.className='flip-card';el.tabIndex=0;el.setAttribute('role','button');el.setAttribute('aria-label','Retourner la carte '+c[0]+' '+c[2]);
+ el.innerHTML=`<div class="flip-inner"><div class="face"><div class="card-num">INDICE ${c[0]}</div><div class="card-icon">${c[1]}</div><strong>${c[2]}</strong><div class="small">Toucher pour retourner</div></div><div class="face back"><div class="card-num">INDICE ${c[0]}</div><strong>${c[2]}</strong><p>${c[3]}</p></div></div>`;
+ const flip=()=>el.classList.toggle('flipped');el.addEventListener('click',flip);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flip()}});
+ cards.appendChild(el);
+});
+function go(n){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('s'+n).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function checkCode(){const v=document.getElementById('code').value.trim();const f=document.getElementById('feedback');if(v==='4714'){f.textContent='Cadenas ouvert ! Le dossier final est accessible.';setTimeout(()=>go(7),700);}else{f.textContent='Ce code ne fonctionne pas. Relisez les indices et vérifiez leur ordre.';}}
+function restart(){document.getElementById('code').value='';document.getElementById('feedback').textContent='';document.querySelectorAll('.flip-card').forEach(c=>c.classList.remove('flipped'));go(1);}
+document.getElementById('code').addEventListener('input',e=>{e.target.value=e.target.value.replace(/\D/g,'').slice(0,4)});
+</script>
+</body>
+</html>
